@@ -6,14 +6,23 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { auth } from "../firebase.init";
+
+const provider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   //register
   const register = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  // google sing in
+  const googleSignUp = () => {
+    return signInWithPopup(auth, provider);
   };
 
   // updateUser Image  and displayname
@@ -51,6 +60,8 @@ const AuthProvider = ({ children }) => {
     updateUser,
     login,
     LogOutUser,
+    setUser,
+    googleSignUp,
   };
   return <AuthContext value={authData}>{children}</AuthContext>;
 };

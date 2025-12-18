@@ -7,6 +7,7 @@ const Navbar = () => {
   const [openProfile, setOpenProfile] = useState(false);
   const [openMobile, setOpenMobile] = useState(false);
   const menuRef = useRef(null);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const handler = (e) => {
@@ -17,6 +18,19 @@ const Navbar = () => {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  // console.log(user);
+
+  //get singleUser Info
+  useEffect(() => {
+    if (user?.email) {
+      fetch(`http://localhost:3000/user?email=${user.email}`)
+        .then((res) => res.json())
+        .then((data) => setRole(data.role))
+        .catch((err) => console.log(err.message));
+    }
+  }, [user?.email]);
+  console.log(role);
 
   return (
     <header className="bg-white shadow">
@@ -37,9 +51,7 @@ const Navbar = () => {
             <Link to="/issues" className="text-gray-600 hover:text-blue-600">
               All Issues
             </Link>
-            <Link to="/extra-1" className="text-gray-600 hover:text-blue-600">
-              Extra Page 1
-            </Link>
+
             <Link to="/extra-2" className="text-gray-600 hover:text-blue-600">
               Extra Page 2
             </Link>
@@ -68,13 +80,15 @@ const Navbar = () => {
                       <div className="px-4 py-2 text-sm font-medium text-gray-800">
                         {user?.displayName || "User"}
                       </div>
-                      <Link
-                        to="/dashboard"
-                        onClick={() => setOpenProfile(false)}
-                        className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
-                      >
-                        Dashboard
-                      </Link>
+                      {role && (
+                        <Link
+                          to={`/${role}DeshBoard`}
+                          onClick={() => setOpenProfile(false)}
+                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+                        >
+                          Dashboard
+                        </Link>
+                      )}
                       <button
                         onClick={LogOutUser}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
@@ -141,10 +155,10 @@ const Navbar = () => {
               All Issues
             </Link>
             <Link
-              to="/extra-1"
-              className="block text-gray-700 hover:text-blue-600"
+              to="/createIssue"
+              className="text-gray-600 hover:text-blue-600"
             >
-              Extra Page 1
+              Create Issue
             </Link>
             <Link
               to="/extra-2"
